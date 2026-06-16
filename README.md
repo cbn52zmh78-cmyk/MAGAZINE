@@ -14,8 +14,6 @@ High-end single-model magazine and runway editorial prompts for the GFE roster.
   PROMOTIONAL/
   STAGED SHOTS/
 scripts/            # generators + folder bootstrap
-lib/                # legacy GFE roster data
-prompts/            # legacy flat prompts (pre-v1.3)
 ```
 
 ## Bootstrap folders
