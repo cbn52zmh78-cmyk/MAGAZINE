@@ -7,15 +7,35 @@ All models now extremely striking/stunning with high-impact attractive features.
 from __future__ import annotations
 
 import sys
+from pathlib import Path
+
+MAGAZINE_ROOT = Path(__file__).resolve().parent.parent
+STUDIO_ROOT = MAGAZINE_ROOT.parent / "Studio"
+_SCRIPTS_DIR = Path(__file__).resolve().parent
+for p in (_SCRIPTS_DIR, STUDIO_ROOT):
+    if str(p) not in sys.path:
+        sys.path.insert(0, str(p))
+
+import sys
 from datetime import datetime
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
-MAGAZINE_ROOT = SCRIPTS_DIR.parent
+STUDIO_ROOT = MAGAZINE_ROOT.parent / "Studio"
+MAGAZINE_ASSETS = STUDIO_ROOT / "Magazine_Assets"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-from ensure_magazine_folder_structure import MODEL_SUBFOLDERS, ensure_model_dirs
 from supermodel_roster_data import SUPERMODEL_ROSTER_10
+
+MODEL_SUBFOLDERS = (
+    "01_casting_shots",
+    "02_reference_views",
+    "SCENES",
+    "VARIATIONS",
+    "CLIPS",
+    "PROMOTIONAL",
+    "STAGED SHOTS",
+)
 
 SCENE_FOLDERS = {
     "studio": "01_casting_shots",
@@ -23,10 +43,17 @@ SCENE_FOLDERS = {
 }
 
 
+def ensure_model_dirs(model_name: str) -> None:
+    base = MAGAZINE_ASSETS / model_name
+    for sub in MODEL_SUBFOLDERS:
+        (base / sub).mkdir(parents=True, exist_ok=True)
+
+
 class MagazineModelingPromptGenerator:
     def __init__(self):
         self.version = "1.3"
-        self.root = MAGAZINE_ROOT
+        self.root = MAGAZINE_ASSETS
+        self.root.mkdir(parents=True, exist_ok=True)
         print(f"✅ Supermodel editorial assets ready: {self.root}")
 
     def build_prompt(self, name: str, age: int, ethnicity: str, visuals: str, outfit: str, scene: str = "studio") -> str:
@@ -40,7 +67,6 @@ class MagazineModelingPromptGenerator:
         ensure_model_dirs(name)
         subfolder = SCENE_FOLDERS[scene]
         out_dir = self.root / name / subfolder
-        out_dir.mkdir(parents=True, exist_ok=True)
         filename = out_dir / f"{name}_Supermodel_Magazine_{scene}.txt"
         prompt = self.build_prompt(
             name=name,

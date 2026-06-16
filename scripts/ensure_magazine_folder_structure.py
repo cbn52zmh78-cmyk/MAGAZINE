@@ -1,19 +1,29 @@
 #!/usr/bin/env python3
-"""Ensure GFE-matching subfolder tree for every supermodel in MAGAZINE."""
+"""Ensure GFE-matching subfolder tree for every supermodel under Magazine_Assets."""
 
 from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+MAGAZINE_ROOT = Path(__file__).resolve().parent.parent
+STUDIO_ROOT = MAGAZINE_ROOT.parent / "Studio"
+_SCRIPTS_DIR = Path(__file__).resolve().parent
+for p in (_SCRIPTS_DIR, STUDIO_ROOT):
+    if str(p) not in sys.path:
+        sys.path.insert(0, str(p))
 
 import shutil
 import sys
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
-MAGAZINE_ROOT = SCRIPTS_DIR.parent
+STUDIO_ROOT = MAGAZINE_ROOT.parent / "Studio"
+MAGAZINE_ASSETS = STUDIO_ROOT / "Magazine_Assets"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-from supermodel_roster_data import SUPERMODEL_NAMES, SUPERMODEL_ROSTER_10
+from supermodel_roster_data import SUPERMODEL_ROSTER_10
 
-# Mirrors GFE actor layout (Studio/GFE/{Name}/...)
 MODEL_SUBFOLDERS = (
     "01_casting_shots",
     "02_reference_views",
@@ -24,11 +34,9 @@ MODEL_SUBFOLDERS = (
     "STAGED SHOTS",
 )
 
-FLAT_PROMPTS_DIR = MAGAZINE_ROOT / "prompts"
-
 
 def ensure_model_dirs(model_name: str) -> list[Path]:
-    base = MAGAZINE_ROOT / model_name
+    base = MAGAZINE_ASSETS / model_name
     created: list[Path] = []
     for sub in MODEL_SUBFOLDERS:
         path = base / sub
@@ -47,10 +55,10 @@ def relocate_flat_prompts(model_name: str) -> list[Path]:
         (f"{model_name}_Supermodel_Magazine_runway.txt", "02_reference_views"),
     )
     for filename, subfolder in pairs:
-        src = FLAT_PROMPTS_DIR / filename
+        src = MAGAZINE_ASSETS / filename
         if not src.exists():
             continue
-        dst = MAGAZINE_ROOT / model_name / subfolder / filename
+        dst = MAGAZINE_ASSETS / model_name / subfolder / filename
         if dst.exists():
             continue
         shutil.move(str(src), str(dst))
@@ -59,7 +67,7 @@ def relocate_flat_prompts(model_name: str) -> list[Path]:
 
 
 def main() -> int:
-    print(f"MAGAZINE folder structure — {MAGAZINE_ROOT}\n")
+    print(f"Magazine_Assets folder structure — {MAGAZINE_ASSETS}\n")
     total_new = 0
     total_moved = 0
     for model in SUPERMODEL_ROSTER_10:
@@ -71,7 +79,7 @@ def main() -> int:
         folder_status = f"+{len(created)} new" if created else "ok"
         move_status = f", moved {len(moved)} prompt(s)" if moved else ""
         print(f"  {name}: {folder_status}{move_status}")
-    print(f"\nModels: {len(SUPERMODEL_NAMES)} | New folders: {total_new} | Prompts relocated: {total_moved}")
+    print(f"\nModels: {len(SUPERMODEL_ROSTER_10)} | New folders: {total_new} | Prompts relocated: {total_moved}")
     return 0
 
 

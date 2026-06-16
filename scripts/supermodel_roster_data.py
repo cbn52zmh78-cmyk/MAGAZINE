@@ -2,6 +2,16 @@
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+MAGAZINE_ROOT = Path(__file__).resolve().parent.parent
+STUDIO_ROOT = MAGAZINE_ROOT.parent / "Studio"
+_SCRIPTS_DIR = Path(__file__).resolve().parent
+for p in (_SCRIPTS_DIR, STUDIO_ROOT):
+    if str(p) not in sys.path:
+        sys.path.insert(0, str(p))
+
 SUPERMODEL_ROSTER_10: list[dict[str, str | int]] = [
     {"name": "Valentina Rossi", "age": 25, "ethnicity": "Italian", "visuals": "striking supermodel beauty with sharp defined cheekbones, captivating dark eyes, flawless porcelain skin, perfect symmetrical features, magnetic presence", "outfit": "asymmetric sculptural black wool coat with metallic petal accents and exaggerated shoulders"},
     {"name": "Zara Khan", "age": 26, "ethnicity": "Indian-British", "visuals": "stunning ethereal beauty with long flowing dark hair, delicate yet powerful features, warm glowing golden skin, intense expressive eyes, flawless proportions", "outfit": "flowing emerald silk gown with dramatic cape sleeves and crystal embellishments"},

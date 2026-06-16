@@ -1,35 +1,31 @@
 # MAGAZINE
 
-High-end single-model magazine and runway editorial prompts for the GFE roster.
+High-end supermodel magazine and runway editorial prompts for the Girlfriend Experience roster.
 
-## Layout
+## Split architecture
+
+| Layer | Repo / path | Contents |
+|-------|-------------|----------|
+| **MAGAZINE** (this repo) | `MAGAZINE/` | Prompt generators, roster data, folder bootstrap |
+| **STUDIO** | `Studio/Magazine_Assets/` | All model folders, editorial prompts, hero images |
+
+Sibling layout:
 
 ```
-{Model Name}/       # 10 supermodel folders at repo root (GFE-matching tree)
-  01_casting_shots/     # studio editorial prompt + hero images
-  02_reference_views/   # runway editorial prompt + reference images
-  SCENES/
-  VARIATIONS/
-  CLIPS/
-  PROMOTIONAL/
-  STAGED SHOTS/
-scripts/            # generators + folder bootstrap
+Grok Projects/
+├── MAGAZINE/         ← you are here (scripts)
+└── Studio/
+    └── Magazine_Assets/   ← {Anya Petrova, …} model asset folders
 ```
 
-## Bootstrap folders
+## Scripts
+
+Requires `Studio/` as a sibling folder:
 
 ```bash
 cd scripts
 python ensure_magazine_folder_structure.py
-```
-
-## Regenerate prompts
-
-```bash
-cd scripts
 python fashion_modeling_prompt_generator.py
 ```
 
-## Usage
-
-Copy the **Imagine prompt paragraph** from `{Name}/01_casting_shots/` or `02_reference_views/` into Grok Imagine (16:9).
+All outputs land in `../Studio/Magazine_Assets/{Name}/`.
